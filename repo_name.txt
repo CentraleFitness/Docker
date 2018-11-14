@@ -1,0 +1,12 @@
+Server.git
+intra_admin.git
+intra_gerant.git
+email_api.git
+api-manager.git
+backoffice-server.git
+site_vitrine.git
+backoffice-relais.git
+relay-services.git
+geocoding.git
+Centrale-Fitness-Embedded.git
+centralefitnesssimmulator.git
