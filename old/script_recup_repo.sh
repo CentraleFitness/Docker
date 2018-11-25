@@ -1,12 +1,9 @@
 #!/bin/sh
 
-rm -rf src
-
-mkdir src
-
-cd src
+mkdir work
+cd work
 
 for repo in $(cat "../repo_name.txt"); do
-	echo ${repo}
+	echo $repo
 	git clone "https://github.com/CentraleFitness/$repo"
 done

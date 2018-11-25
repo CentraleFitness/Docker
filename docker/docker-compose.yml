@@ -1,0 +1,52 @@
+version: '3.1'
+
+services:
+
+  site-vitrine:
+    image: nginx-prod-site-vitrine
+    expose:
+    - "80"
+    networks:
+    - docker-network
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+    - "traefik.frontend.rule=Host:site-vitrine"
+
+  intra-gerant:
+    image: nginx-prod-intra-gerant
+    expose:
+    - "80"
+    networks:
+    - docker-network
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+    - "traefik.frontend.rule=Host:intra-gerant"
+
+  intra-admin:
+    image: nginx-prod-intra-admin
+    expose:
+      - "80"
+    networks:
+      - docker-network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      - "traefik.frontend.rule=Host:intra-admin"
+
+  traefik:
+    image: traefik:1.5
+    command: --web --docker --logLevel=DEBUG
+    networks:
+    - docker-network
+    ports:
+    - "80:80"
+    - "8080:8080"
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    - "$PWD/traefik.toml:/traefik.toml"
+
+networks:
+  docker-network:
+    driver: bridge

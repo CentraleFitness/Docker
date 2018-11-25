@@ -8,3 +8,5 @@ site_vitrine.git
 backoffice-relais.git
 relay-services.git
 geocoding.git
+Centrale-Fitness-Embedded.git
+centralefitnesssimmulator.git

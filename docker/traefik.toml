@@ -1,0 +1,4 @@
+[docker]
+domain = "*"
+endpoint = "unix:///var/run/docker.sock"
+watch = true
