@@ -11,7 +11,7 @@ services:
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-    - "traefik.frontend.rule=Host:site-vitrine"
+    - "traefik.frontend.rule=Host:site-vitrine.centrale-fitness.fr.nf"
 
   intra-gerant:
     image: nginx-prod-intra-gerant
@@ -22,7 +22,7 @@ services:
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-    - "traefik.frontend.rule=Host:intra-gerant"
+    - "traefik.frontend.rule=Host:intra-gerant.centrale-fitness.fr.nf"
 
   intra-admin:
     image: nginx-prod-intra-admin
@@ -33,9 +33,22 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-      - "traefik.frontend.rule=Host:intra-admin"
+      - "traefik.frontend.rule=Host:intra-admin.centrale-fitness.fr.nf"
+
+  backend-java:
+    image: java-prod-server
+    expose:
+      - "8082"
+    networks:
+      - docker-network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      - "traefik.frontend.rule=Host:api.centrale-fitness.fr.nf"
+
 
   traefik:
+    restart: always
     image: traefik:1.5
     command: --web --docker --logLevel=DEBUG
     networks:
