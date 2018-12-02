@@ -11,7 +11,7 @@ services:
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-    - "traefik.frontend.rule=Host:site-vitrine.centrale-fitness.fr.nf"
+    - "traefik.frontend.rule=Host:centrale-fitness.fr.nf"
 
   intra-gerant:
     image: nginx-prod-intra-gerant
