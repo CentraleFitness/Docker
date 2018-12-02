@@ -2,8 +2,6 @@
 
 set -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 mkdir -p dist
 mkdir -p src
 
@@ -17,7 +15,7 @@ mkdir -p src
 #nginx dessert les fronts
 
 #on build le Dockerfile qu'une seule fois
-docker build -t "fit/nginx-build" -f "$DIR/nginx/build/Dockerfile" .
+docker build -t "fit/nginx-build" -f "nginx/build/Dockerfile" .
 
 #build le site vitrine
 docker run --name "nginx-build" -w="//opt/app/site_vitrine" "fit/nginx-build"
