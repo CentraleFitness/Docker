@@ -4,8 +4,7 @@ MAINTAINER Géraldine de Vanssay version: 1.0
 
 # Config env
 ENV APP_HOME=/opt/app \
-    SRC_FILES=src/Server \
-    DIST_FILES=dist/ \
+    DIST_FILES=dist/server \
     MAVEN_VERSION=3.3.3 \
     JAVA_VERSION_MAJOR=8 \
     JAVA_VERSION_MINOR=131 \
@@ -77,8 +76,8 @@ RUN for pkg in glibc-${GLIBC_VERSION} glibc-bin-${GLIBC_VERSION} glibc-i18n-${GL
            /tmp/* /var/cache/apk/* && \
     echo "hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4" >> /etc/nsswitch.conf
 
-COPY $SRC_FILES $APP_HOME/
+COPY $DIST_FILES $APP_HOME/
 
 WORKDIR $APP_HOME
 ENTRYPOINT ["sh", "-c"]
-CMD ["java -jar Centrale_Fitness_Server-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "Centrale_Fitness_Server-1.0-SNAPSHOT.jar"]

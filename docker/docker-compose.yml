@@ -39,12 +39,34 @@ services:
     image: java-prod-server
     expose:
       - "8082"
+      - "8080"
+      - "10000"
+      - "5445"
+      - "6660"
+      - "8083"
     networks:
       - docker-network
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-      - "traefik.frontend.rule=Host:api.centrale-fitness.fr.nf"
+      - "traefik.api.web.centrale-fitness.fr.nf.port=8280"
+      - "traefik.api.web.centrale-fitness.fr.nf.frontend.rule=Host:api.web.centrale-fitness.fr.nf"
+      - "traefik.api.mobile.centrale-fitness.fr.nf.port=8080"
+      - "traefik.api.mobile.centrale-fitness.fr.nf.frontend.rule=Host:api.mobile.centrale-fitness.fr.nf"
+      - "traefik.api.module.centrale-fitness.fr.nf.port=10000"
+      - "traefik.api.module.centrale-fitness.fr.nf.frontend.rule=Host:api.module.centrale-fitness.fr.nf"
+      - "traefik.api.intranet.centrale-fitness.fr.nf.port=5445"
+      - "traefik.api.intranet.centrale-fitness.fr.nf.frontend.rule=Host:api.intranet.centrale-fitness.fr.nf"
+      - "traefik.api.image.centrale-fitness.fr.nf.port=6660"
+      - "traefik.api.image.centrale-fitness.fr.nf.frontend.rule=Host:api.image.centrale-fitness.fr.nf"
+      - "traefik.api.admin.centrale-fitness.fr.nf.port=8083"
+      - "traefik.api.admin.centrale-fitness.fr.nf.frontend.rule=Host:api.admin.centrale-fitness.fr.nf"
+
+
+        #intra admin => 8083
+      #IOS, Android et site_vitrine => 8080
+      #ESP32-relay, relay-services, Centrale-Fitness-Embedded => 10000
+      #intra_gerant => 5445 (ils ont d'ailleurs une erreur sur leurs repos qui est 5446)
 
 
   traefik:

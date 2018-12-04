@@ -4,9 +4,11 @@ MAINTAINER Géraldine de Vanssay version: 1.0
 
 # Config env
 ENV APP_HOME=/opt/app \
-    SRC_FILES=src/ \
-    OUTPUT_FILES=dist/java \
+    SRC_FILES=src/Server \
+    OUTPUT_FILES=dist/server \
     MAVEN_VERSION=3.3.3 \
+    GRADLE_VERSION=4.10.2 \
+    GRADLE_HOME=/opt/gradle \
     JAVA_VERSION_MAJOR=8 \
     JAVA_VERSION_MINOR=131 \
     JAVA_VERSION_BUILD=11 \
@@ -21,7 +23,7 @@ ENV APP_HOME=/opt/app \
     LC_ALL=en_US.UTF-8 \
 	PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
-RUN apk upgrade --update && apk add curl
+RUN apk upgrade --update && apk add curl shadow
 
 # JAVA SE & LIB C
 RUN for pkg in glibc-${GLIBC_VERSION} glibc-bin-${GLIBC_VERSION} glibc-i18n-${GLIBC_VERSION}; do curl -sSL https://github.com/andyshinn/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/${pkg}.apk -o /tmp/${pkg}.apk; done && \
@@ -84,9 +86,31 @@ RUN cd /usr/share \
  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
 # Gradle
+ARG GRADLE_DOWNLOAD_SHA256=b49c6da1b2cb67a0caf6c7480630b51c70a11ca2016ff2f555eaeda863143a29
+RUN set -o errexit -o nounset \
+	&& echo "Downloading Gradle" \
+	&& wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+	\
+	&& echo "Checking download hash" \
+	&& echo "${GRADLE_DOWNLOAD_SHA256} *gradle.zip" | sha256sum -c - \
+	\
+	&& echo "Installing Gradle" \
+	&& unzip gradle.zip \
+	&& rm gradle.zip \
+	&& mv "gradle-${GRADLE_VERSION}" "${GRADLE_HOME}/" \
+	&& ln -s "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle \
+	\
+	&& echo "Adding gradle user and group" \
+	&& groupadd --system --gid 1000 gradle \
+	&& useradd --system --gid gradle --uid 1000 --shell /bin/bash --create-home gradle \
+	&& mkdir /home/gradle/.gradle \
+	&& chown -R gradle:gradle /home/gradle \
+	\
+	&& echo "Symlinking root Gradle cache to gradle Gradle cache" \
+	&& ln -s /home/gradle/.gradle /root/.gradle
 
 COPY $SRC_FILES $APP_HOME/
 
 WORKDIR $APP_HOME
 ENTRYPOINT ["sh", "-c"]
-CMD ["mvn"]
+CMD ["gradle build"]
