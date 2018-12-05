@@ -80,4 +80,4 @@ COPY $DIST_FILES $APP_HOME/
 
 WORKDIR $APP_HOME
 ENTRYPOINT ["sh", "-c"]
-CMD ["java", "-jar", "Centrale_Fitness_Server-1.0-SNAPSHOT.jar"]
+CMD ["java -jar Centrale_Fitness_Server-1.0-SNAPSHOT.jar"]
