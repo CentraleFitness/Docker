@@ -1,4 +1,31 @@
+defaultEntryPoints = ["http", "https"]
+
 [docker]
-domain = "*"
-endpoint = "unix:///var/run/docker.sock"
-watch = true
+  domain = "centrale-fitness.fr.nf"
+  endpoint = "unix:///var/run/docker.sock"
+  watch = true
+  swarmmode = false
+
+[entryPoints]
+  [entryPoints.http]
+    address = ":80"
+	[entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.tls]
+
+[acme]
+  email = "contact@centrale-fitness.fr.nf"
+  caServer = "https://acme-v02.api.letsencrypt.org/directory"
+  storage = "/acme.json"
+  acmeLogging = true
+  onDemand = false
+  onHostRule = false
+  entryPoint = "https"
+  [acme.httpChallenge]
+    entryPoint = "http"
+
+[[acme.domains]]
+  main = "centrale-fitness.fr.nf"
+  sans = ["intra-gerant.centrale-fitness.fr.nf", "intra-admin.centrale-fitness.fr.nf", "api.web.centrale-fitness.fr.nf", "api.mobile.centrale-fitness.fr.nf", "api.module.centrale-fitness.fr.nf", "api.intranet.centrale-fitness.fr.nf", "api.image.centrale-fitness.fr.nf", "api.admin.centrale-fitness.fr.nf"]

@@ -3,22 +3,24 @@ version: '3.1'
 services:
 
   site-vitrine:
+    restart: always
     image: nginx-prod-site-vitrine
     expose:
     - "80"
     networks:
-    - docker-network
+    - traefik
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
     - "traefik.frontend.rule=Host:centrale-fitness.fr.nf"
 
   intra-gerant:
+    restart: always
     image: nginx-prod-intra-gerant
     expose:
     - "80"
     networks:
-    - docker-network
+    - traefik
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
@@ -29,13 +31,14 @@ services:
     expose:
       - "80"
     networks:
-      - docker-network
+      - traefik
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
       - "traefik.frontend.rule=Host:intra-admin.centrale-fitness.fr.nf"
 
   backend-java:
+    restart: always
     image: java-prod-server
     expose:
       - "8082"
@@ -44,44 +47,57 @@ services:
       - "5445"
       - "6660"
       - "8083"
+    depends_on:
+      - mango
     networks:
-      - docker-network
+      - traefik
+      - database
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-      - "traefik.api.web.centrale-fitness.fr.nf.port=8280"
-      - "traefik.api.web.centrale-fitness.fr.nf.frontend.rule=Host:api.web.centrale-fitness.fr.nf"
-      - "traefik.api.mobile.centrale-fitness.fr.nf.port=8080"
-      - "traefik.api.mobile.centrale-fitness.fr.nf.frontend.rule=Host:api.mobile.centrale-fitness.fr.nf"
-      - "traefik.api.module.centrale-fitness.fr.nf.port=10000"
-      - "traefik.api.module.centrale-fitness.fr.nf.frontend.rule=Host:api.module.centrale-fitness.fr.nf"
-      - "traefik.api.intranet.centrale-fitness.fr.nf.port=5445"
-      - "traefik.api.intranet.centrale-fitness.fr.nf.frontend.rule=Host:api.intranet.centrale-fitness.fr.nf"
-      - "traefik.api.image.centrale-fitness.fr.nf.port=6660"
-      - "traefik.api.image.centrale-fitness.fr.nf.frontend.rule=Host:api.image.centrale-fitness.fr.nf"
-      - "traefik.api.admin.centrale-fitness.fr.nf.port=8083"
-      - "traefik.api.admin.centrale-fitness.fr.nf.frontend.rule=Host:api.admin.centrale-fitness.fr.nf"
-
-
-        #intra admin => 8083
-      #IOS, Android et site_vitrine => 8080
-      #ESP32-relay, relay-services, Centrale-Fitness-Embedded => 10000
-      #intra_gerant => 5445 (ils ont d'ailleurs une erreur sur leurs repos qui est 5446)
-
+      - "traefik.api.web.port=8280"
+      - "traefik.api.web.rule=Host:api.web.centrale-fitness.fr.nf"
+      - "traefik.api.mobile.port=8080"
+      - "traefik.api.mobile.frontend.rule=Host:api.mobile.centrale-fitness.fr.nf"
+      - "traefik.api.module.port=10000"
+      - "traefik.api.module.frontend.rule=Host:api.module.centrale-fitness.fr.nf"
+      - "traefik.api.intranet.port=5445"
+      - "traefik.api.intranet.frontend.rule=Host:api.intranet.centrale-fitness.fr.nf"
+      - "traefik.api.image.port=6660"
+      - "traefik.api.image.frontend.rule=Host:api.image.centrale-fitness.fr.nf"
+      - "traefik.api.admin.port=8083"
+      - "traefik.api.admin.frontend.rule=Host:api.admin.centrale-fitness.fr.nf"
 
   traefik:
     restart: always
-    image: traefik:1.5
+    image: traefik:latest
     command: --web --docker --logLevel=DEBUG
     networks:
-    - docker-network
+    - traefik
+    - database
     ports:
+    - "443:443"
     - "80:80"
     - "8080:8080"
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     - "$PWD/traefik.toml:/traefik.toml"
+    - "$PWD/acme.json:/acme.json"
+    labels:
+    - "traefik.enable=false"
 
+  mango:
+    restart: always
+    image: mongo:latest
+    networks:
+     - database
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      - "traefik.enable=false"
+    
 networks:
-  docker-network:
+  traefik:
+    driver: bridge
+  database:
     driver: bridge
