@@ -56,7 +56,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
       - "traefik.api.web.port=8280"
-      - "traefik.api.web.rule=Host:api.web.centrale-fitness.fr.nf"
+      - "traefik.api.web.frontend.rule=Host:api.web.centrale-fitness.fr.nf"
       - "traefik.api.mobile.port=8080"
       - "traefik.api.mobile.frontend.rule=Host:api.mobile.centrale-fitness.fr.nf"
       - "traefik.api.module.port=10000"
