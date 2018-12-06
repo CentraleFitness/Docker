@@ -6,25 +6,25 @@ services:
     restart: always
     image: nginx-prod-site-vitrine
     expose:
-    - "80"
+      - "80"
     networks:
-    - traefik
+      - traefik
     volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-    - "traefik.frontend.rule=Host:centrale-fitness.fr.nf"
+      - "traefik.frontend.rule=Host:centrale-fitness.fr.nf"
 
   intra-gerant:
     restart: always
     image: nginx-prod-intra-gerant
     expose:
-    - "80"
+      - "80"
     networks:
-    - traefik
+      - traefik
     volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
-    - "traefik.frontend.rule=Host:intra-gerant.centrale-fitness.fr.nf"
+      - "traefik.frontend.rule=Host:intra-gerant.centrale-fitness.fr.nf"
 
   intra-admin:
     image: nginx-prod-intra-admin
@@ -73,29 +73,38 @@ services:
     image: traefik:latest
     command: --web --docker --logLevel=DEBUG
     networks:
-    - traefik
-    - database
+      - traefik
+      - database
     ports:
-    - "443:443"
-    - "80:80"
-    - "8080:8080"
+      - "443:443"
+      - "80:80"
+      - "8080:8080"
     volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"
-    - "$PWD/traefik.toml:/traefik.toml"
-    - "$PWD/acme.json:/acme.json"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "$PWD/traefik.toml:/traefik.toml"
+      - "$PWD/acme.json:/acme.json"
     labels:
-    - "traefik.enable=false"
+      - "traefik.enable=false"
 
   mango:
     restart: always
     image: mongo:latest
     networks:
-     - database
+      - database
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
       - "traefik.enable=false"
-    
+
+  mango-tools:
+    image: mango-backup-tools
+    networks:
+      - database
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      - "traefik.enable=false"
+
 networks:
   traefik:
     driver: bridge

@@ -2,10 +2,12 @@
 
 set -e
 
+if [[ -d "$PWD/dist" ]]; then
+  rm -r dist
+fi
+
 mkdir -p dist
 mkdir -p src
-
-#rm -r dist/*
 
 #docker rm $(docker ps -aq -f name=nginx-build)
 

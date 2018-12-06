@@ -2,11 +2,15 @@
 
 set -e
 
+chmod 600 docker/acme.json
+
 docker build --build-arg CURRENT_APP=site_vitrine -t "nginx-prod-site-vitrine" -f ./nginx/prod/Dockerfile .
 docker build --build-arg CURRENT_APP=intra_gerant -t "nginx-prod-intra-gerant" -f ./nginx/prod/Dockerfile .
 docker build --build-arg CURRENT_APP=intra_admin -t "nginx-prod-intra-admin" -f nginx/prod/Dockerfile .
 
 docker build -t "java-prod-server" -f java/prod/Dockerfile .
+
+docker build -t "mango-backup-tools" -f backup/Dockerfile .
 
 #build de relay-services Dockerfile, changement en perspective pour ajouter les autres projets python
 #docker build -t "python-prod-relay-service" \
