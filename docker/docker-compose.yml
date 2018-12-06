@@ -93,6 +93,7 @@ services:
       - database
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "../backup/persistent_volume/:/data/db"
     labels:
       - "traefik.enable=false"
 
@@ -102,6 +103,7 @@ services:
       - database
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "../backup/files/:/opt/app"
     labels:
       - "traefik.enable=false"
 

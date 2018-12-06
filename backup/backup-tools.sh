@@ -4,4 +4,4 @@ set -e
 
 cd ../docker
 
-docker-compose.exe run mango-tools sh
+docker-compose run --rm mango-tools 'mongorestore --host=mango -d centrale-fitness dase_db_save/'
